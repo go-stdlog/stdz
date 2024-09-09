@@ -19,12 +19,19 @@ type Z struct {
 	cfg zap.Config
 }
 
-func New(logger *zap.Logger) stdlog.Logger {
-	return &zLogger{logger}
+func New(cfg zap.Config) (*Z, error) {
+	l, err := cfg.Build(zap.AddCallerSkip(1))
+	if err != nil {
+		return nil, err
+	}
+	return &Z{l, cfg}, nil
 }
 
-func (z *zLogger) Named(name string) stdlog.Logger {
-	return New(z.Logger.Named(name))
+func (z *Z) Named(name string) stdlog.Logger {
+	n := new(Z)
+	*n = *z
+	n.Logger = n.Logger.Named(name)
+	return n
 }
 
 func (z *zLogger) SetLevel(level stdlog.Level) {
