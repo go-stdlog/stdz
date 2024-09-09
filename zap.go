@@ -4,9 +4,16 @@ import (
 	"fmt"
 	"github.com/go-stdlog/stdlog"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type zLogger struct {
+var lmap = map[stdlog.Level]zapcore.Level{
+	stdlog.LevelDebug:   zapcore.DebugLevel,
+	stdlog.LevelInfo:    zapcore.InfoLevel,
+	stdlog.LevelWarning: zapcore.WarnLevel,
+	stdlog.LevelError:   zapcore.ErrorLevel,
+}
 	*zap.Logger
 }
 
