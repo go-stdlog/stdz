@@ -1,6 +1,7 @@
 package stdz
 
 import (
+	"fmt"
 	"github.com/go-stdlog/stdlog"
 	"go.uber.org/zap"
 )
@@ -9,7 +10,7 @@ type zLogger struct {
 	*zap.Logger
 }
 
-func New(logger *zap.Logger) stdlog.Logger[zap.Field] {
+func New(logger *zap.Logger) stdlog.Logger {
 	return &zLogger{logger}
 }
 
@@ -24,28 +25,28 @@ func (z *zLogger) SetLevel(level stdlog.Level) {
 	}
 }
 
-func (z *zLogger) Debug(msg string, fields ...zap.Field) {
-	z.Logger.Debug(msg, fields...)
+func (z *zLogger) Debug(msg string, fields ...any) {
+	z.Logger.Debug(msg, handleFields(stdlog.LevelDebug, fields)...)
 }
 
-func (z *zLogger) Info(msg string, fields ...zap.Field) {
-	z.Logger.Info(msg, fields...)
+func (z *zLogger) Info(msg string, fields ...any) {
+	z.Logger.Info(msg, handleFields(stdlog.LevelInfo, fields)...)
 }
 
-func (z *zLogger) Warning(msg string, fields ...zap.Field) {
-	z.Logger.Warn(msg, fields...)
+func (z *zLogger) Warning(msg string, fields ...any) {
+	z.Logger.Warn(msg, handleFields(stdlog.LevelWarning, fields)...)
 }
 
-func (z *zLogger) Error(err error, msg string, fields ...zap.Field) {
-	z.Logger.Error(msg, append(fields, zap.Error(err))...)
+func (z *zLogger) Error(err error, msg string, fields ...any) {
+	z.Logger.Error(msg, handleFields(stdlog.LevelError, append(fields, zap.Error(err)))...)
 }
 
-func (z *zLogger) Fatal(msg string, fields ...zap.Field) {
-	z.Logger.Fatal(msg, fields...)
+func (z *zLogger) Fatal(msg string, fields ...any) {
+	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, fields)...)
 }
 
-func (z *zLogger) FatalError(err error, msg string, fields ...zap.Field) {
-	z.Logger.Fatal(msg, append(fields, zap.Error(err))...)
+func (z *zLogger) FatalError(err error, msg string, fields ...any) {
+	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, append(fields, zap.Error(err)))...)
 }
 
 func handleFields(level stdlog.Level, kvs []any) []zap.Field {

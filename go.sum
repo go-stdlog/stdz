@@ -4,6 +4,8 @@ github.com/go-stdlog/stdlog v0.0.1 h1:NHIuXafiPL5NwBAjQiNhViPFz59kMM9wci+i8fNjc3
 github.com/go-stdlog/stdlog v0.0.1/go.mod h1:SK/i4Y8CtzkfNlpsGoya1Pfj3kpeM02izItT6A1DWzI=
 github.com/go-stdlog/stdlog v0.0.2 h1:bPhou2u+Yyt5Rx+3jwefVG1R/Aci4KNL6CKvI/CkLdc=
 github.com/go-stdlog/stdlog v0.0.2/go.mod h1:SK/i4Y8CtzkfNlpsGoya1Pfj3kpeM02izItT6A1DWzI=
+github.com/go-stdlog/stdlog v0.0.3 h1:tn/2+PFqON/TLqqvuEGnrxoCuxqNvPIS57hSJ8bpG/0=
+github.com/go-stdlog/stdlog v0.0.3/go.mod h1:SK/i4Y8CtzkfNlpsGoya1Pfj3kpeM02izItT6A1DWzI=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
