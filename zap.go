@@ -7,14 +7,16 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type zLogger struct {
 var lmap = map[stdlog.Level]zapcore.Level{
 	stdlog.LevelDebug:   zapcore.DebugLevel,
 	stdlog.LevelInfo:    zapcore.InfoLevel,
 	stdlog.LevelWarning: zapcore.WarnLevel,
 	stdlog.LevelError:   zapcore.ErrorLevel,
 }
+
+type Z struct {
 	*zap.Logger
+	cfg zap.Config
 }
 
 func New(logger *zap.Logger) stdlog.Logger {
@@ -32,27 +34,27 @@ func (z *zLogger) SetLevel(level stdlog.Level) {
 	}
 }
 
-func (z *zLogger) Debug(msg string, fields ...any) {
+func (z *Z) Debug(msg string, fields ...any) {
 	z.Logger.Debug(msg, handleFields(stdlog.LevelDebug, fields)...)
 }
 
-func (z *zLogger) Info(msg string, fields ...any) {
+func (z *Z) Info(msg string, fields ...any) {
 	z.Logger.Info(msg, handleFields(stdlog.LevelInfo, fields)...)
 }
 
-func (z *zLogger) Warning(msg string, fields ...any) {
+func (z *Z) Warning(msg string, fields ...any) {
 	z.Logger.Warn(msg, handleFields(stdlog.LevelWarning, fields)...)
 }
 
-func (z *zLogger) Error(err error, msg string, fields ...any) {
+func (z *Z) Error(err error, msg string, fields ...any) {
 	z.Logger.Error(msg, handleFields(stdlog.LevelError, append(fields, zap.Error(err)))...)
 }
 
-func (z *zLogger) Fatal(msg string, fields ...any) {
+func (z *Z) Fatal(msg string, fields ...any) {
 	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, fields)...)
 }
 
-func (z *zLogger) FatalError(err error, msg string, fields ...any) {
+func (z *Z) FatalError(err error, msg string, fields ...any) {
 	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, append(fields, zap.Error(err)))...)
 }
 
