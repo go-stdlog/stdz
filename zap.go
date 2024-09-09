@@ -34,11 +34,18 @@ func (z *Z) Named(name string) stdlog.Logger {
 	return n
 }
 
-func (z *zLogger) SetLevel(level stdlog.Level) {
-	l := z.Logger.Level()
-	if err := l.Set(level.String()); err != nil {
-		panic(err)
+func (z *Z) SetLevel(level stdlog.Level) {
+	z.cfg.Level = zap.NewAtomicLevelAt(lmap[level])
+	l, err := z.cfg.Build(zap.AddCallerSkip(1))
+	if err != nil {
+		z.FatalError(err, "Failed to rebuild config with new level", "level", level.String())
 	}
+
+	if z.Logger.Name() != "" {
+		z.Logger = l.Named(z.Logger.Name())
+		return
+	}
+	z.Logger = l
 }
 
 func (z *Z) Debug(msg string, fields ...any) {
