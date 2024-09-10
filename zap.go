@@ -81,8 +81,7 @@ func handleFields(level stdlog.Level, kvs []any) []zap.Field {
 
 	for i := 0; i < len(kvs)-1; i += 2 {
 		k := fmt.Sprintf("%v", kvs[i])
-		v := fmt.Sprintf("%v", kvs[i+1])
-		fields = append(fields, zap.Any(k, v))
+		fields = append(fields, zap.Any(k, kvs[i+1]))
 	}
 
 	return fields
