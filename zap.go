@@ -69,7 +69,7 @@ func (z *Z) Fatal(msg string, fields ...any) {
 }
 
 func (z *Z) FatalError(err error, msg string, fields ...any) {
-	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, append(fields, zap.Error(err)))...)
+	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, fields, zap.Error(err))...)
 }
 
 func handleFields(level stdlog.Level, kvs []any, extra ...zap.Field) []zap.Field {
