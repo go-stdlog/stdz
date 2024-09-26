@@ -61,7 +61,7 @@ func (z *Z) Warning(msg string, fields ...any) {
 }
 
 func (z *Z) Error(err error, msg string, fields ...any) {
-	z.Logger.Error(msg, handleFields(stdlog.LevelError, append(fields, zap.Error(err)))...)
+	z.Logger.Error(msg, handleFields(stdlog.LevelError, fields, zap.Error(err))...)
 }
 
 func (z *Z) Fatal(msg string, fields ...any) {
@@ -72,7 +72,7 @@ func (z *Z) FatalError(err error, msg string, fields ...any) {
 	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, append(fields, zap.Error(err)))...)
 }
 
-func handleFields(level stdlog.Level, kvs []any) []zap.Field {
+func handleFields(level stdlog.Level, kvs []any, extra ...zap.Field) []zap.Field {
 	if len(kvs)%2 != 0 {
 		panic(fmt.Errorf("uneven keys and values passed to %s", level.String()))
 	}
@@ -84,5 +84,5 @@ func handleFields(level stdlog.Level, kvs []any) []zap.Field {
 		fields = append(fields, zap.Any(k, kvs[i+1]))
 	}
 
-	return fields
+	return append(fields, extra...)
 }
