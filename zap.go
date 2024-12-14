@@ -48,6 +48,13 @@ func (z *Z) SetLevel(level stdlog.Level) {
 	z.Logger = l
 }
 
+func (z *Z) Leveled(level stdlog.Level) stdlog.Logger {
+	cp := new(Z)
+	*cp = *z
+	cp.SetLevel(level)
+	return cp
+}
+
 func (z *Z) Debug(msg string, fields ...any) {
 	z.Logger.Debug(msg, handleFields(stdlog.LevelDebug, fields)...)
 }
