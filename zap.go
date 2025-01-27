@@ -55,33 +55,40 @@ func (z *Z) Leveled(level stdlog.Level) stdlog.Logger {
 	return cp
 }
 
+func (z *Z) WithFields(keysAndValues ...any) stdlog.Logger {
+	n := new(Z)
+	*n = *z
+	n.Logger = n.Logger.With(handleFields("WithFields", keysAndValues)...)
+	return n
+}
+
 func (z *Z) Debug(msg string, fields ...any) {
-	z.Logger.Debug(msg, handleFields(stdlog.LevelDebug, fields)...)
+	z.Logger.Debug(msg, handleFields(stdlog.LevelDebug.String(), fields)...)
 }
 
 func (z *Z) Info(msg string, fields ...any) {
-	z.Logger.Info(msg, handleFields(stdlog.LevelInfo, fields)...)
+	z.Logger.Info(msg, handleFields(stdlog.LevelInfo.String(), fields)...)
 }
 
 func (z *Z) Warning(msg string, fields ...any) {
-	z.Logger.Warn(msg, handleFields(stdlog.LevelWarning, fields)...)
+	z.Logger.Warn(msg, handleFields(stdlog.LevelWarning.String(), fields)...)
 }
 
 func (z *Z) Error(err error, msg string, fields ...any) {
-	z.Logger.Error(msg, handleFields(stdlog.LevelError, fields, zap.Error(err))...)
+	z.Logger.Error(msg, handleFields(stdlog.LevelError.String(), fields, zap.Error(err))...)
 }
 
 func (z *Z) Fatal(msg string, fields ...any) {
-	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, fields)...)
+	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal.String(), fields)...)
 }
 
 func (z *Z) FatalError(err error, msg string, fields ...any) {
-	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal, fields, zap.Error(err))...)
+	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal.String(), fields, zap.Error(err))...)
 }
 
-func handleFields(level stdlog.Level, kvs []any, extra ...zap.Field) []zap.Field {
+func handleFields(method string, kvs []any, extra ...zap.Field) []zap.Field {
 	if len(kvs)%2 != 0 {
-		panic(fmt.Errorf("uneven keys and values passed to %s", level.String()))
+		panic(fmt.Errorf("uneven keys and values passed to %s", method))
 	}
 
 	fields := make([]zap.Field, 0, len(kvs)/2)
