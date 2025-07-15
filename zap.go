@@ -16,7 +16,8 @@ var lmap = map[stdlog.Level]zapcore.Level{
 
 type Z struct {
 	*zap.Logger
-	cfg zap.Config
+	cfg       zap.Config
+	stackSkip uint
 }
 
 func New(cfg zap.Config) (*Z, error) {
@@ -24,7 +25,7 @@ func New(cfg zap.Config) (*Z, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Z{l, cfg}, nil
+	return &Z{l, cfg, 0}, nil
 }
 
 func (z *Z) Named(name string) stdlog.Logger {
@@ -34,9 +35,27 @@ func (z *Z) Named(name string) stdlog.Logger {
 	return n
 }
 
+func (z *Z) Skipping(count uint) stdlog.Logger {
+	n := new(Z)
+	*n = *z
+	n.stackSkip = count
+	l, err := z.cfg.Build(zap.AddCallerSkip(1 + int(z.stackSkip)))
+	if err != nil {
+		z.FatalError(err, "Failed to rebuild config with new stack skip")
+	}
+
+	if z.Logger.Name() != "" {
+		n.Logger = l.Named(z.Logger.Name())
+	} else {
+		n.Logger = l
+	}
+	return n
+
+}
+
 func (z *Z) SetLevel(level stdlog.Level) {
 	z.cfg.Level = zap.NewAtomicLevelAt(lmap[level])
-	l, err := z.cfg.Build(zap.AddCallerSkip(1))
+	l, err := z.cfg.Build(zap.AddCallerSkip(1 + int(z.stackSkip)))
 	if err != nil {
 		z.FatalError(err, "Failed to rebuild config with new level", "level", level.String())
 	}
