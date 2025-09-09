@@ -3,7 +3,7 @@ module github.com/go-stdlog/stdz
 go 1.22.5
 
 require (
-	github.com/go-stdlog/stdlog v0.0.17
+	github.com/go-stdlog/stdlog v0.0.18
 	go.uber.org/zap v1.27.0
 )
 

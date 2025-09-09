@@ -2,9 +2,11 @@ package stdz
 
 import (
 	"fmt"
-	"github.com/go-stdlog/stdlog"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/go-stdlog/stdlog"
 )
 
 var lmap = map[stdlog.Level]zapcore.Level{
