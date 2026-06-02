@@ -18,8 +18,9 @@ var lmap = map[stdlog.Level]zapcore.Level{
 
 type Z struct {
 	*zap.Logger
-	cfg       zap.Config
-	stackSkip uint
+	cfg           zap.Config
+	stackSkip     uint
+	fatalBehavior stdlog.FatalBehavior
 }
 
 func New(cfg zap.Config) (*Z, error) {
@@ -27,7 +28,7 @@ func New(cfg zap.Config) (*Z, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Z{l, cfg, 0}, nil
+	return &Z{l, cfg, 0, stdlog.FatalExits}, nil
 }
 
 func (z *Z) Named(name string) stdlog.Logger {
@@ -35,6 +36,10 @@ func (z *Z) Named(name string) stdlog.Logger {
 	*n = *z
 	n.Logger = n.Logger.Named(name)
 	return n
+}
+
+func (z *Z) SetFatalBehavior(b stdlog.FatalBehavior) {
+	z.fatalBehavior = b
 }
 
 func (z *Z) Skipping(count uint) stdlog.Logger {
@@ -100,11 +105,21 @@ func (z *Z) Error(err error, msg string, fields ...any) {
 }
 
 func (z *Z) Fatal(msg string, fields ...any) {
-	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal.String(), fields)...)
+	if z.fatalBehavior == stdlog.FatalExits {
+		z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal.String(), fields)...)
+	} else {
+		z.Logger.Error(msg, handleFields(stdlog.LevelFatal.String(), fields)...)
+		panic(msg)
+	}
 }
 
 func (z *Z) FatalError(err error, msg string, fields ...any) {
-	z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal.String(), fields, zap.Error(err))...)
+	if z.fatalBehavior == stdlog.FatalExits {
+		z.Logger.Fatal(msg, handleFields(stdlog.LevelFatal.String(), fields, zap.Error(err))...)
+	} else {
+		z.Logger.Error(msg, handleFields(stdlog.LevelFatal.String(), fields, zap.Error(err))...)
+		panic(msg)
+	}
 }
 
 func handleFields(method string, kvs []any, extra ...zap.Field) []zap.Field {
